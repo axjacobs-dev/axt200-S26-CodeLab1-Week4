@@ -2,26 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     //game object with the timer text
     public GameObject timerTextObject;
-
+    //timer display as text
     TextMeshPro textMeshComponent;
-    
+    //game manager singleton!
     public static GameManager instance;
-    
+    //elapsed time
     float time = 0;
-
+    //time until game over
     public int gameTime = 5;
-    
+    //is game over or not
     bool isGameOver;
-
+    //private variable for the score
     private int score = 0;
-//with a property you don't want the functions inside to refer to the property
+    //with a property you don't want the functions inside to refer to the property
     public int Score
     {
         set
@@ -35,14 +34,14 @@ public class GameManager : MonoBehaviour
     }
 
   
-
+    //list for the high scores
   List<int> highScores;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //create a basic property for score
     void Start()
     {
-        textMeshComponent = timerTextObject.GetComponent<TextMeshPro>();
+        textMeshComponent = timerTextObject.GetComponent<TextMeshPro>(); //gets the text displays
         if (instance == null)
         {
             instance = this;
@@ -54,6 +53,7 @@ public class GameManager : MonoBehaviour
         }
         //but if you try to randomize the rate it will assign
         //a random number the first time but repeat with that number
+        //calls this function every 1 second after one second
         InvokeRepeating("IncreaseTime", 1f, 1f);
 
     }
@@ -62,19 +62,20 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         //time += Time.deltaTime;
+        //sets the timer display
         textMeshComponent.SetText("Time: " + Math.Floor(time));
-
-        if (time >= gameTime)
+    
+        if (time >= gameTime) //condition for game over
         {
-            Debug.Log("Game Over");
+            Debug.Log("Game Over"); 
             //textMeshComponent.SetText("Game Over");
             //calls the function to save the high scores
             if (!isGameOver)
             {
-                UpdateHighScores();
+                UpdateHighScores(); //but if game is not over then update high scores file
             }
 
-            isGameOver = true;
+            isGameOver = true;  //if condition is met then game is over
         }
     }
     void IncreaseTime()
@@ -84,7 +85,7 @@ public class GameManager : MonoBehaviour
         //if you just want to use Invoke to repeatedly call something
         Invoke("IncreaseTime", 1f);
     }
-
+    //function for updating high scores and saving them to a file
     void UpdateHighScores()
     {
         //TODO: review diff between data Path and persistent data Path
@@ -92,11 +93,10 @@ public class GameManager : MonoBehaviour
         
         if (highScores == null) //we don't have the data yet from the file
         {
-            
+            highScores = new List<int>(); //calls new list of high scores
             //if the file does not exist
             if (!File.Exists(filePath))
             {
-                highScores = new List<int>();
                 //add some default values
                 //(var to change over time; do we stay in the loop; what to change with each loop)
                 //this for loop makes new default high scores
@@ -104,15 +104,21 @@ public class GameManager : MonoBehaviour
                 {
                     highScores.Add(i * 10);
                 }
-
             }
             else
             {
-                {
                     //TODO: read value from the file and put them into the list
+                string scores = File.ReadAllText(filePath);
+                scores = scores.TrimEnd(',');
+                string[] scoresArray = scores.Split(",");
+
+                for (int i = 0; i < scoresArray.Length; i++)
+                {
+                    highScores.Add(int.Parse(scoresArray[i]));
                 }
             }
         }
+    
         //check to see if there is a new high score
         
         //compare score to each part of the list

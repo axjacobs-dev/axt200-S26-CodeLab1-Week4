@@ -109,8 +109,8 @@ public class GameManager : MonoBehaviour
             {
                     //TODO: read value from the file and put them into the list
                 string scores = File.ReadAllText(filePath);
-                scores = scores.TrimEnd(',');
-                string[] scoresArray = scores.Split(",");
+                //scores = scores.TrimEnd(',');
+                string[] scoresArray = scores.Split(","); //but trailing comma seems to break this
 
                 for (int i = 0; i < scoresArray.Length; i++)
                 {

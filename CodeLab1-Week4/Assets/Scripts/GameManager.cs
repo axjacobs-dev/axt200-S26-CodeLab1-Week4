@@ -116,7 +116,14 @@ public class GameManager : MonoBehaviour
 
                 for (int i = 0; i < scoresArray.Length; i++)
                 {
-                    highScores.Add(int.Parse(scoresArray[i]));
+                    try
+                    {
+                        highScores.Add(int.Parse(scoresArray[i]));
+                    }
+                    catch (FormatException fe)
+                    {
+                        Debug.Log(fe.Message);
+                    }
                 }
             }
         }
